@@ -6,8 +6,6 @@ from scipy.spatial import distance
 import scipy as sp
 from scipy.integrate import odeint,quad,simps
 from math import sqrt,sin,pi,cos,exp,log
-import matplotlib
-matplotlib.use('pdf')
 
 def density_estimation(X):
     """
@@ -34,7 +32,7 @@ def kernel_matrix(X,epsilon):
     Norm = -distance.squareform(distance.pdist(X, 'sqeuclidean'))/(4 *(Rho.T @ Rho) * epsilon)
     return(np.exp(Norm))
 
-def bandwidth_search(X,h = 1e-6,K=50,plot=False):
+def bandwidth_search(X,h = 1e-6,K=50,verbose=False,plot=False):
     """
     Computes the optimal bandwidth for the kernel
     approximation given the data X and also computes
@@ -46,7 +44,7 @@ def bandwidth_search(X,h = 1e-6,K=50,plot=False):
     :return epsilon: a float
     :return d: a float 
     """
-
+    N, n = X.shape
     Norm = np.log(kernel_matrix(X,epsilon=1))
     T = lambda epsilon : (1/N**2)*np.exp(Norm / epsilon).sum()
     a = np.zeros(K)
@@ -57,14 +55,15 @@ def bandwidth_search(X,h = 1e-6,K=50,plot=False):
     epsilon = 2 **np.linspace(-20,2,K)[np.argmax(a)]
 
     d = 2 * (log(T(h+epsilon)) - log(T(epsilon))) / (log(epsilon+h) - log(epsilon))
-    print(f"epsilon = {epsilon:.2e}")
-    print(f"d = {d:.2f}")
+    if verbose:
+        print(f"epsilon = {epsilon:.2e}")
+        print(f"d = {d:.2f}")
 
     if plot:
         fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=200)
 
-        axs[0].plot(2**np.linspace(-20,2),val,zorder=1,color='#322671')
-        axs[0].scatter(epsilon,max(val),color='red',zorder=2)
+        axs[0].plot(2**np.linspace(-20,2),a,zorder=1,color='#322671')
+        axs[0].scatter(epsilon,max(a),color='red',zorder=2)
 
         axs[0].set_xlabel('$\epsilon$')
         axs[0].set_ylabel('Power Law')
@@ -80,7 +79,7 @@ def bandwidth_search(X,h = 1e-6,K=50,plot=False):
     return(epsilon,d)
 
 
-def  KNPGenerator(X,M):
+def  KNPGenerator(X,M,plot=False):
     """
     Computes eigenvalues and eigenvectors 
     of the infinitesimal generator using the 
@@ -124,6 +123,22 @@ def  KNPGenerator(X,M):
 
     phi = S_1 @ U
     phi = phi / np.linalg.norm(phi,axis=0) * np.sqrt(N)
+
+    U = U / np.linalg.norm(U,axis=0) * np.sqrt(N)
+
+    if plot and n == 1:
+        fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=200)
+        axs[0].plot(l)
+        axs[0].set_title('Eigenvalues')
+        axs[0].grid(alpha=0.3)
+
+        for i in range(10):
+            axs[1].scatter(X,phi[:,i],s=1)
+        axs[1].grid(alpha=0.3)
+        axs[1].set_ylim(-4,4)
+        axs[1].set_title('Eigenvectors')
+        plt.plot()
+
 
     return(l,phi)
 
