@@ -34,7 +34,7 @@ def kernel_matrix(X,epsilon):
     Norm = -distance.squareform(distance.pdist(X, 'sqeuclidean'))/(4 *(Rho.T @ Rho) * epsilon)
     return(np.exp(Norm))
 
-def bandwidth_search(X,h = 1e-6,K=50):
+def bandwidth_search(X,h = 1e-6,K=50,plot=False):
     """
     Computes the optimal bandwidth for the kernel
     approximation given the data X and also computes
@@ -59,6 +59,24 @@ def bandwidth_search(X,h = 1e-6,K=50):
     d = 2 * (log(T(h+epsilon)) - log(T(epsilon))) / (log(epsilon+h) - log(epsilon))
     print(f"epsilon = {epsilon:.2e}")
     print(f"d = {d:.2f}")
+
+    if plot:
+        fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=200)
+
+        axs[0].plot(2**np.linspace(-20,2),val,zorder=1,color='#322671')
+        axs[0].scatter(epsilon,max(val),color='red',zorder=2)
+
+        axs[0].set_xlabel('$\epsilon$')
+        axs[0].set_ylabel('Power Law')
+        axs[0].set_xscale('log',base=2)
+
+        axs[1].plot(2**np.linspace(-20,2), [T(2**l) for l in np.linspace(-20,2)],zorder=1,color='#322671')
+        axs[1].scatter(epsilon,T(epsilon),s=30,color='red',zorder=2)
+        axs[1].set_xlabel('$\epsilon$')
+        axs[1].set_ylabel('$T(\epsilon)$')
+        axs[1].set_xscale('log',base=2)
+        plt.show()
+
     return(epsilon,d)
 
 
