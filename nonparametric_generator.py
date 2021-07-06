@@ -126,17 +126,17 @@ def  KNPGenerator(X,M,plot=False,return_extra=False):
     
     U = U / np.linalg.norm(U,axis=0) * np.sqrt(N)
 
-    if plot and n == 1:
+    for j in range(n):
         fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=200)
         axs[0].plot(l)
         axs[0].set_title('Eigenvalues')
         axs[0].grid(alpha=0.3)
 
         for i in range(10):
-            axs[1].scatter(X,U[:,i],s=1)
+            axs[1].scatter(X[:,j],U[:,i],s=1)
         axs[1].grid(alpha=0.3)
         axs[1].set_ylim(-4,4)
-        axs[1].set_title('Eigenvectors')
+        axs[1].set_title(f'Eigenvectors dimension {j}')
         plt.plot()
 
     if return_extra:
