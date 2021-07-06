@@ -136,7 +136,9 @@ def  KNPGenerator(X,M,plot=False,return_extra=False):
             axs[1].scatter(X[:,j],U[:,i],s=1)
         axs[1].grid(alpha=0.3)
         axs[1].set_ylim(-4,4)
-        axs[1].set_title(f'Eigenvectors dimension {j}')
+        axs[1].set_xlabel(f'$X_{j+1}$')
+        axs[1].set_ylabel(f'$\varphi(x)$')
+        axs[1].set_title(f'Eigenvectors')
         plt.plot()
 
     if return_extra:
