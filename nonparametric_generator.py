@@ -79,7 +79,7 @@ def bandwidth_search(X,h = 1e-6,K=50,verbose=False,plot=False):
     return(epsilon,d)
 
 
-def  KNPGenerator(X,M,plot=False):
+def  KNPGenerator(X,M,plot=False,return_extra=False):
     """
     Computes eigenvalues and eigenvectors 
     of the infinitesimal generator using the 
@@ -123,7 +123,7 @@ def  KNPGenerator(X,M,plot=False):
 
     phi = S_1 @ U
     phi = phi / np.linalg.norm(phi,axis=0) * np.sqrt(N)
-
+    
     U = U / np.linalg.norm(U,axis=0) * np.sqrt(N)
 
     if plot and n == 1:
@@ -133,14 +133,18 @@ def  KNPGenerator(X,M,plot=False):
         axs[0].grid(alpha=0.3)
 
         for i in range(10):
-            axs[1].scatter(X,phi[:,i],s=1)
+            axs[1].scatter(X,U[:,i],s=1)
         axs[1].grid(alpha=0.3)
         axs[1].set_ylim(-4,4)
         axs[1].set_title('Eigenvectors')
         plt.plot()
 
+    if return_extra:
+        return(l,phi,L_e,U)
+    else:
+        return(l,phi)
 
-    return(l,phi)
+    
 
 if __name__ == '__main__':
     n = 1
