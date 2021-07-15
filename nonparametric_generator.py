@@ -45,12 +45,14 @@ def bandwidth_search(X,h = 1e-6,K=50,verbose=False,plot=False):
     :return d: a float 
     """
     N, n = X.shape
-    Norm = np.log(kernel_matrix(X,epsilon=1))
+    # Norm = np.log(kernel_matrix(X,epsilon=1))
+    Norm = -distance.squareform(distance.pdist(X, 'sqeuclidean'))/(4 )
     T = lambda epsilon : (1/N**2)*np.exp(Norm / epsilon).sum()
     a = np.zeros(K)
 
     for i,e in enumerate(2**np.linspace(-20,2,K)): #evaluate for valyes from 2^-30 to 2 
-        a[i] = (log(T(h+e)) - log(T(e))) / (log(e+h) - log(e))
+        # a[i] = (log(T(h+e)) - log(T(e))) / (log(e+h) - log(e))
+        a[i] = (log(T(e*2)) - log(T(e))) / (log(e*2) - log(e))
 
     epsilon = 2 **np.linspace(-20,2,K)[np.argmax(a)]
 
@@ -60,16 +62,16 @@ def bandwidth_search(X,h = 1e-6,K=50,verbose=False,plot=False):
         print(f"d = {d:.2f}")
 
     if plot:
-        fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=200)
+        fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=100)
 
-        axs[0].plot(2**np.linspace(-20,2),a,zorder=1,color='#322671')
+        axs[0].plot(2**np.linspace(-20,2,K),a,zorder=1,color='#322671')
         axs[0].scatter(epsilon,max(a),color='red',zorder=2)
 
         axs[0].set_xlabel('$\epsilon$')
         axs[0].set_ylabel('Power Law')
         axs[0].set_xscale('log',base=2)
 
-        axs[1].plot(2**np.linspace(-20,2), [T(2**l) for l in np.linspace(-20,2)],zorder=1,color='#322671')
+        axs[1].plot(2**np.linspace(-20,2,K), [T(2**l) for l in np.linspace(-20,2)],zorder=1,color='#322671')
         axs[1].scatter(epsilon,T(epsilon),s=30,color='red',zorder=2)
         axs[1].set_xlabel('$\epsilon$')
         axs[1].set_ylabel('$T(\epsilon)$')
@@ -125,21 +127,20 @@ def  KNPGenerator(X,M,plot=False,return_extra=False):
     phi = phi / np.linalg.norm(phi,axis=0) * np.sqrt(N)
     
     U = U / np.linalg.norm(U,axis=0) * np.sqrt(N)
+    if plot:
+        for j in range(n):
+            fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=200)
+            axs[0].plot(l)
+            axs[0].set_title('Eigenvalues')
+            axs[0].grid(alpha=0.3)
 
-    for j in range(n):
-        fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=200)
-        axs[0].plot(l)
-        axs[0].set_title('Eigenvalues')
-        axs[0].grid(alpha=0.3)
-
-        for i in range(10):
-            axs[1].scatter(X[:,j],U[:,i],s=1)
-        axs[1].grid(alpha=0.3)
-        axs[1].set_ylim(-4,4)
-        axs[1].set_xlabel(f'$X_{j+1}$')
-        axs[1].set_ylabel(f'$\varphi(x)$')
-        axs[1].set_title(f'Eigenvectors')
-        plt.plot()
+            for i in range(min(10,M)):
+                axs[1].scatter(X[:,j],U[:,i],s=1)
+            axs[1].grid(alpha=0.3)
+            axs[1].set_ylim(-4,4)
+            axs[1].set_xlabel(f'$X_{j+1}$')
+            axs[1].set_ylabel(f'$\\varphi(x)$')
+            axs[1].set_title(f'Eigenvectors')
 
     if return_extra:
         return(l,phi,L_e,U)
