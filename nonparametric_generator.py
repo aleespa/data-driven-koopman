@@ -6,8 +6,20 @@ from scipy.spatial import distance
 import scipy as sp
 from scipy.integrate import odeint,quad,simps
 from math import sqrt,sin,pi,cos,exp,log
+from scipy.spatial import KDTree
 
-def density_estimation(X):
+
+def rho_0(x,X,k0=64):
+    tree = KDTree(X)
+    return((1/(k0-1)) * np.sum(tree.query(x,np.arange(2,k0+2))[0]**2,axis=1))
+
+def q_0(X,Y):
+    rho_l = rho_0(X,X)
+    rho_i = rho_0(Y,X)
+    expo = np.exp(- distance.cdist(X,Y,'sqeuclidean')/(2 * rho_l @ rho_i.T) )
+    return((2*np.pi ** (-d/2)/((rho_i**d) * n)) *np.sum(expo,axis=0))
+
+def density_estimation(X,epsilon_0= None):
     """
     Estimates the density given the data 
 
@@ -15,10 +27,10 @@ def density_estimation(X):
 
     :returns rho: a n dimensional function 
     """
-    kdensity  = sp.stats.gaussian_kde(X.T)
+    kdensity  = sp.stats.gaussian_kde(X.T,bw_method =epsilon_0)
     return kdensity
 
-def kernel_matrix(X,epsilon):
+def kernel_matrix(X,epsilon,epsilon_0 = None):
     """
     Computes the variable bandwith 
     kernel matrix given a set of observations X
@@ -26,7 +38,7 @@ def kernel_matrix(X,epsilon):
     :param X: an Nxn numpy array
     """
     N,n = X.shape
-    p_est = density_estimation(X)
+    p_est = density_estimation(X,epsilon_0)
     rho = lambda x: p_est(x)**(-0.5)
     Rho = rho(X.T).reshape(1,N)
     Norm = -distance.squareform(distance.pdist(X, 'sqeuclidean'))/(4 *(Rho.T @ Rho) * epsilon)
@@ -81,7 +93,7 @@ def bandwidth_search(X,h = 1e-6,K=50,verbose=False,plot=False):
     return(epsilon,d)
 
 
-def  KNPGenerator(X,M,plot=False,return_extra=False):
+def  KNPGenerator(X,M,plot=False,return_extra=False,epsilon_0 = None):
     """
     Computes eigenvalues and eigenvectors 
     of the infinitesimal generator using the 
@@ -96,12 +108,12 @@ def  KNPGenerator(X,M,plot=False,return_extra=False):
     N, n = X.shape
     epsilon,d = bandwidth_search(X)
     alpha = -d/4
-    p_est = density_estimation(X)
+    p_est = density_estimation(X,epsilon_0)
 
     rho = lambda x: p_est(x)**(-0.5)
     Rho = rho(X.T).reshape(1,N)
 
-    K_e = kernel_matrix(X,epsilon)
+    K_e = kernel_matrix(X,epsilon,epsilon_0)
     q_e = (K_e.sum(axis=1) / (Rho ** d)).reshape(N,1)
 
     K_e_a = K_e/((q_e**alpha)@ (q_e** alpha).T)
@@ -129,7 +141,7 @@ def  KNPGenerator(X,M,plot=False,return_extra=False):
     U = U / np.linalg.norm(U,axis=0) * np.sqrt(N)
     if plot:
         for j in range(n):
-            fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=200)
+            fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=100)
             axs[0].plot(l)
             axs[0].set_title('Eigenvalues')
             axs[0].grid(alpha=0.3)
