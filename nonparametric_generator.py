@@ -16,7 +16,7 @@ def rho_0(x,X,k0=64):
 def q_0(X,Y):
     rho_l = rho_0(X,X)
     rho_i = rho_0(Y,X)
-    expo = np.exp(- distance.cdist(X,Y,'sqeuclidean')/(2 * rho_l @ rho_i.T) )
+    expo = np.exp(- distance.cdist(X,Y,'sqeuclidean')/(2 * rho_l @ rho_i.T))
     return((2*np.pi ** (-d/2)/((rho_i**d) * n)) *np.sum(expo,axis=0))
 
 def density_estimation(X,epsilon_0= None):
@@ -44,6 +44,19 @@ def kernel_matrix(X,epsilon,epsilon_0 = None):
     Norm = -distance.squareform(distance.pdist(X, 'sqeuclidean'))/(4 *(Rho.T @ Rho) * epsilon)
     return(np.exp(Norm))
 
+def Manifold_volume_kernel(Norm,epsilon,N):
+    """
+    Estimation of the volume of the manifold
+    from a kernel and the bandwidth
+
+    :param Norm: an nxn numpy array
+    :param epsion: a float
+
+    :return T: a float
+    """
+    T =  (1/N**2)*np.exp(Norm / epsilon).sum()
+    return(T)
+
 def bandwidth_search(X,h = 1e-6,K=50,verbose=False,plot=False):
     """
     Computes the optimal bandwidth for the kernel
@@ -58,8 +71,8 @@ def bandwidth_search(X,h = 1e-6,K=50,verbose=False,plot=False):
     """
     N, n = X.shape
     # Norm = np.log(kernel_matrix(X,epsilon=1))
-    Norm = -distance.squareform(distance.pdist(X, 'sqeuclidean'))/(4 )
-    T = lambda epsilon : (1/N**2)*np.exp(Norm / epsilon).sum()
+    Norm = -distance.squareform(distance.pdist(X, 'sqeuclidean'))/(4)
+    T = lambda epsilon: Manifold_volume_kernel(Norm,epsilon,N)
     a = np.zeros(K)
 
     for i,e in enumerate(2**np.linspace(-20,2,K)): #evaluate for valyes from 2^-30 to 2 
@@ -93,7 +106,7 @@ def bandwidth_search(X,h = 1e-6,K=50,verbose=False,plot=False):
     return(epsilon,d)
 
 
-def  KNPGenerator(X,M,plot=False,return_extra=False,epsilon_0 = None):
+def  KNPGenerator(X,M,plot=False,return_extra=False,epsilon_0 = None,epsilon=None,d=None):
     """
     Computes eigenvalues and eigenvectors 
     of the infinitesimal generator using the 
@@ -106,7 +119,9 @@ def  KNPGenerator(X,M,plot=False,return_extra=False,epsilon_0 = None):
     :return phi: matrix of columns of eigenvectors
     """
     N, n = X.shape
-    epsilon,d = bandwidth_search(X)
+    if not epsilon:
+        epsilon,d = bandwidth_search(X)
+
     alpha = -d/4
     p_est = density_estimation(X,epsilon_0)
 
@@ -136,9 +151,9 @@ def  KNPGenerator(X,M,plot=False,return_extra=False,epsilon_0 = None):
     U = U[:,::-1]
 
     phi = S_1 @ U
-    phi = phi / np.linalg.norm(phi,axis=0) * np.sqrt(N)
-    
+    phi = phi / np.linalg.norm(phi,axis=0) * np.sqrt(N)    
     U = U / np.linalg.norm(U,axis=0) * np.sqrt(N)
+    
     if plot:
         for j in range(n):
             fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=100)
