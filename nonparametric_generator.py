@@ -144,7 +144,7 @@ def  KNPGenerator(X,M,plot=False,return_extra=False,epsilon_0 = None,epsilon=Non
     D_1 = np.diag(np.diag(Dii)**-1)
 
     L_hat = (1/epsilon) * (S_1 @ K_e_a @ S_1 - P_2)
-    L_e =   (1/epsilon) * P_2 @ (D_1@ K_e_a - I )
+    L_e =   (1/epsilon) * P_2 @ (D_1 @ K_e_a - I)
 
     l, U = sp.linalg.eigh(L_hat,subset_by_index =(N-M,N-1),turbo=False)
     l = l[::-1]
@@ -162,7 +162,7 @@ def  KNPGenerator(X,M,plot=False,return_extra=False,epsilon_0 = None,epsilon=Non
             axs[0].grid(alpha=0.3)
 
             for i in range(min(10,M)):
-                axs[1].scatter(X[:,j],U[:,i],s=1)
+                axs[1].plot(np.sort(X[:,j]),U[np.argsort(X[:,j]),i],lw=1)
             axs[1].grid(alpha=0.3)
             axs[1].set_ylim(-4,4)
             axs[1].set_xlabel(f'$X_{j+1}$')
@@ -172,7 +172,7 @@ def  KNPGenerator(X,M,plot=False,return_extra=False,epsilon_0 = None,epsilon=Non
     if return_extra:
         return(l,phi,L_e,U)
     else:
-        return(l,phi)
+        return(l,phi,U)
 
     
 
