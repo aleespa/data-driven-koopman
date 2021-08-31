@@ -18,7 +18,7 @@ class Koopman_estimation:
         self.X = X #Dataset
         self.n = np.shape(self.X)[0] #Number of observations
         self.m = np.shape(self.X)[1] #Number of dimensions
-        print(f'Dataset with {self.n} observations and dimension {self.m}')
+        print(f'Dataset with {self.n:,} observations and dimension {self.m:,}')
         
     def density_estimation(self,epsilon_0= None):
         """
@@ -143,7 +143,12 @@ class Koopman_estimation:
 
     def diffusion_estimation(self,Xt,dt):
         """
-        sd
+        Estimation of the diffusion parameter
+        using the information of the correlation
+        time from the time series
+
+        :param Xt: a numpy array with the time series
+        :param dt: the time step
         """
         n = len(Xt)
         St = np.sum(Xt - Xt.mean(),axis=1)
@@ -158,11 +163,52 @@ class Koopman_estimation:
 
         C_tau = C_tau[C_tau>0]
         pv = len(C_tau)
-
         Tc = simps(x=np.linspace(0,n*dt,n)[:pv],y= C_tau / C0)
+
 
         S = np.sum(self.X - (self.X).mean(),axis=1)
         s1 = np.sum((1/self.l) * (S.T@(self.phi))**2)
         s2 = np.sum((S.T@(self.phi))**2)
         self.D = - (1/Tc)* (s1/s2)
-        print(f'Diffusion  = {self.D}')
+        print(f'Diffusion  = {self.D:.3f}')
+
+    def infinitesimal_operator(self,f):
+        """"
+        Estimation of the Infinitesimal operator
+        applied to user-defined function f
+
+        :param f: a vectorized function f
+
+        :return Lf: an array with the approximation on the obersrvations
+        """
+
+        self.phi_1 = np.linalg.pinv(self.phi)
+        Y = f(self.X)
+        c_coef = (self.D*(self.phi_1@Y)).reshape(-1)
+        Lf = np.sum((c_coef*self.l) * self.phi,axis=1)
+        return(Lf)
+
+    def transition_estimation(self,p_0,tf=1,Nt=100):
+        """
+        Estimation of the evolution of the density
+        given an initial value for the density
+
+        :param p_0: the intial density
+        :param tf: final time for the evoultion
+        :param Nt: number of steps of the evolution
+        """
+        
+        rho_eq = np.vectorize(lambda x: self.p_est(x)[0])
+        c_0 = (1/self.n) * np.sum(((p_0/rho_eq(self.X))) * self.phi,axis=0)
+        tarray = np.linspace(0,tf,Nt)
+        self.csol = np.exp(tarray[:,None] * self.l[None,:] * self.D ) * c_0
+    
+    def koopman_operator(self,f):
+        """"
+        Estimation of the Koopman operator
+        applied to user-defined function f
+
+        :param f: a vectorized function f
+
+        :return Lf: an array with the approximation on the obersrvations
+        """
