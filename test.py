@@ -69,5 +69,5 @@ plt.grid(alpha=0.3)
 plt.show()
 
 plt.figure()
-plt.scatter(X,Lf,s=2)
+plt.scatter(X,Lf,s=2,color='r')
 plt.show()
