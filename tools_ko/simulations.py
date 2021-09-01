@@ -1,5 +1,6 @@
 #tools_ko/simulations
 import numpy as np
+from scipy.special import erfinv
 
 def OUSimulation(x0, n,dt,D):
     """
@@ -20,6 +21,17 @@ def OUSimulation(x0, n,dt,D):
         X[i,:] = x - x*dt +np.sqrt(2*D) * noise[i,:]
     return(X)
 
+def OUDeterministic(N):
+    """
+    Determinisic sampling from the 
+    inviariand distribution of the OU 
+    process
+
+    :param N: Number of sampling points
+    """
+    x_hat = np.linspace(0,1,N+2)
+    X = np.sqrt(2)*erfinv(2*x_hat[1:-1] - 1)
+    return(X)
 
 def DWSimulation(x0, n,dt,D):
     """
