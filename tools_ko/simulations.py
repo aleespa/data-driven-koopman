@@ -1,6 +1,7 @@
 #tools_ko/simulations
 import numpy as np
 from scipy.special import erfinv
+from scipy.integrate import trapezoid,cumtrapz
 
 def OUSimulation(x0, n,dt,D):
     """
@@ -24,7 +25,7 @@ def OUSimulation(x0, n,dt,D):
 def OUDeterministic(N):
     """
     Determinisic sampling from the 
-    inviariand distribution of the OU 
+    inviariant distribution of the OU 
     process
 
     :param N: Number of sampling points
@@ -52,6 +53,25 @@ def DWSimulation(x0, n,dt,D):
     for i in range(1,n):
         x = X[i-1,:]
         X[i,:] = x -DV(x)*dt +np.sqrt(2*D) * noise[i,:]
+    return(X)
+
+def DWDeterministic(N,D=1):
+    """
+    Determinisic sampling from the 
+    inviariant distribution of the 
+    Double-Well potential process
+
+    :param N: Number of sampling points
+    """
+    V = lambda x:  (5/6)*x**6 - (5/2)*x**4
+    Z = trapezoid(x = np.linspace(-10,10,2000),y = [np.exp(-V(x)/D) for x in np.linspace(-10,10,2000)])
+    rho_inf = lambda x : (1/Z) * np.exp(-V(x)/D)
+    x = np.linspace(-4,4,10000)
+    F = cumtrapz(x =x,y = rho_inf(x))
+    x_bar = np.linspace(1e-10,1-1e-10,N)
+    X = np.zeros((N,1))
+    for i in range(N):
+        X[i] = (x[:-1][F>x_bar[i]])[0]
     return(X)
 
 def OUSimulation2d(n=100000,dt = 0.0001,D=1):
