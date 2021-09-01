@@ -203,7 +203,7 @@ class Koopman_estimation:
         tarray = np.linspace(0,tf,Nt)
         self.csol = np.exp(tarray[:,None] * self.l[None,:] * self.D ) * c_0
     
-    def koopman_operator(self,f):
+    def koopman_operator(self,f,tf=1,Nt=100):
         """"
         Estimation of the Koopman operator
         applied to user-defined function f
@@ -212,3 +212,15 @@ class Koopman_estimation:
 
         :return Lf: an array with the approximation on the obersrvations
         """
+
+        tarray = np.linspace(0,tf,Nt)
+        c_0 = self.phi.T #Initial condition
+        eigen_exp = np.exp(tarray[:,None] * self.l[None,:] * self.D)
+        csol = (eigen_exp[...,None]*c_0[None,...]) 
+
+        Y = f(self.X)
+        a = (1/self.n)*(Y @ self.phi)
+        
+        Koopman = np.tensordot(csol,a,axes=(1,0))
+
+        return(Koopman)
