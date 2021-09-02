@@ -70,23 +70,6 @@ class Koopman_estimation:
         print(f"epsilon = {self.epsilon:.2e}")
         print(f"d = {self.d:.2f}")
 
-        if plot:
-            fig,axs = plt.subplots(1,2,figsize=(12,3),dpi=100)
-
-            axs[0].plot(2**np.linspace(-20,2,K),a,zorder=1,color='#322671')
-            axs[0].scatter(self.epsilon,max(a),color='red',zorder=2)
-
-            axs[0].set_xlabel('$\epsilon$')
-            axs[0].set_ylabel('Power Law')
-            axs[0].set_xscale('log',base=2)
-
-            axs[1].plot(2**np.linspace(-20,2,K), [T(2**l) for l in np.linspace(-20,2)],zorder=1,color='#322671')
-            axs[1].scatter(self.epsilon,T(self.epsilon),s=30,color='red',zorder=2)
-            axs[1].set_xlabel('$\epsilon$')
-            axs[1].set_ylabel('$T(\epsilon)$')
-            axs[1].set_xscale('log',base=2)
-            plt.show()
-
     def kernel_matrix(self,epsilon_0 = None):
         """
         Computes the variable bandwith 
