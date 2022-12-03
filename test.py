@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pylab as plt
-from tools_ko.ko_estimation import Koopman_estimation
+from tools_ko.ko_estimation import KoopmanEstimation
 from tools_ko.simulations import OUSimulation
 import scipy as sp
 from scipy.integrate import trapezoid
@@ -16,7 +16,7 @@ Xt = OUSimulation(x0,n,dt,D)
 N = 2000
 X = Xt[np.random.choice(range(n),size=N),:]
 
-K = Koopman_estimation(X)
+K = KoopmanEstimation(X)
 K.density_estimation(epsilon_0=  0.2)
 K.bandwidth_search()
 K.kernel_matrix()

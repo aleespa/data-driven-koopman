@@ -1,22 +1,19 @@
 # tools_ko/ko_estimation
 import numpy as np
 import scipy as sp
-import matplotlib.pylab as plt
 from scipy.stats import norm
 from scipy.spatial import distance
-import scipy as sp
-from scipy.integrate import odeint, quad, simps
-from math import sqrt, sin, pi, cos, exp, log
-from scipy.spatial import KDTree
+from scipy.integrate import simps
+from math import log
 
 
-class Koopman_estimation:
-    def __init__(self, X):
+class KoopmanEstimation:
+    def __init__(self, x):
         """
-        To create the estimation object you only requiere
-        the dataset as numpy array shaped as (observartions,dimension)
+        To create the estimation object you only require
+        the dataset as numpy array shaped as (observations,dimension)
         """
-        self.X = X  # Dataset
+        self.X = x  # Dataset
         self.n = np.shape(self.X)[0]  # Number of observations
         self.m = np.shape(self.X)[1]  # Number of dimensions
         print(f'Dataset with {self.n:,} observations and dimension {self.m:,}')
@@ -25,7 +22,8 @@ class Koopman_estimation:
         """
         Estimates the density given the data 
 
-        :param X: an nxm array 
+        :param X: a nxm array
+        :param epsilon_0: The bandwidth parameter
 
         :returns rho: a n dimensional function 
         """

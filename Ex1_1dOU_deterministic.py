@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pylab as plt
-from tools_ko.ko_estimation import Koopman_estimation
+from tools_ko.ko_estimation import KoopmanEstimation
 from tools_ko.simulations import OUSimulation, OUDeterministic
 import scipy as sp
 from scipy.integrate import trapezoid
@@ -8,7 +8,7 @@ from scipy.integrate import trapezoid
 N = 1000
 X = OUDeterministic(N).reshape(-1, 1)
 
-K = Koopman_estimation(X)
+K = KoopmanEstimation(X)
 K.density_estimation(epsilon_0=0.2)
 K.bandwidth_search()
 K.kernel_matrix()

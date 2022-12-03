@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pylab as plt
-from tools_ko.ko_estimation import Koopman_estimation
+from tools_ko.ko_estimation import KoopmanEstimation
 from tools_ko.simulations import DWDeterministic
 import scipy as sp
 from scipy.integrate import trapezoid
@@ -8,7 +8,7 @@ from scipy.integrate import trapezoid
 N = 4000
 X = DWDeterministic(N).reshape(-1,1)
 
-K = Koopman_estimation(X) #Definition of the object
+K = KoopmanEstimation(X) #Definition of the object
 K.density_estimation(epsilon_0=  0.01) #Density estimation
 K.bandwidth_search() #Search for the optimal bandwidth
 K.kernel_matrix() #Computes the kernel matrix

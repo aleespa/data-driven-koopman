@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pylab as plt
-from tools_ko.ko_estimation import Koopman_estimation
+from tools_ko.ko_estimation import KoopmanEstimation
 from tools_ko.simulations import QWSimulation2d
 import scipy as sp
 from scipy.integrate import trapezoid
@@ -18,7 +18,7 @@ N = 10000
 np.random.seed(1)
 X = Xt[np.random.choice(range(n),size=N),:]
 
-K = Koopman_estimation(X) #Definition of the object
+K = KoopmanEstimation(X) #Definition of the object
 K.density_estimation(epsilon_0 = 0.15) #Density estimation
 K.bandwidth_search() #Search for the optimal bandwidth
 K.kernel_matrix() #Computes the kernel matrix
