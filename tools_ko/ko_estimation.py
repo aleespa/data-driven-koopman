@@ -3,7 +3,7 @@ import numpy as np
 import scipy as sp
 from scipy.stats import norm
 from scipy.spatial import distance
-from scipy.integrate import simps
+from scipy.integrate import simpson
 from math import log
 
 
@@ -116,7 +116,7 @@ class KoopmanEstimation:
         self.L_hat = (1 / self.epsilon) * (S_1 @ (self.K_e_a) @ S_1 - P_2)
         self.L_e = (1 / self.epsilon) * P_2 @ (D_1 @ (self.K_e_a) - I)
 
-        self.l, self.U = sp.linalg.eigh(self.L_hat, subset_by_index=(self.n - M, self.n - 1), turbo=False)
+        self.l, self.U = sp.linalg.eigh(self.L_hat, subset_by_index=(self.n - M, self.n - 1))
         self.l = self.l[::-1]
         self.U = self.U[:, ::-1]
 
@@ -146,7 +146,7 @@ class KoopmanEstimation:
 
         C_tau = C_tau[C_tau > 0]
         pv = len(C_tau)
-        Tc = simps(x=np.linspace(0, n * dt, n)[:pv], y=C_tau / C0)
+        Tc = simpson(x=np.linspace(0, n * dt, n)[:pv], y=C_tau / C0)
 
         S = np.sum(self.X - (self.X).mean(), axis=1)
         s1 = np.sum((1 / self.l) * (S.T @ (self.phi)) ** 2)

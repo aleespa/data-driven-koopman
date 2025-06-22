@@ -1,7 +1,7 @@
 #tools_ko/simulations
 import numpy as np
 from scipy.special import erfinv
-from scipy.integrate import trapezoid,cumtrapz
+from scipy.integrate import trapezoid, cumulative_trapezoid
 
 def OUSimulation(x0, n,dt,D):
     """
@@ -67,7 +67,7 @@ def DWDeterministic(N,D=1):
     Z = trapezoid(x = np.linspace(-10,10,2000),y = [np.exp(-V(x)/D) for x in np.linspace(-10,10,2000)])
     rho_inf = lambda x : (1/Z) * np.exp(-V(x)/D)
     x = np.linspace(-4,4,10000)
-    F = cumtrapz(x =x,y = rho_inf(x))
+    F = cumulative_trapezoid(x =x,y = rho_inf(x))
     x_bar = np.linspace(1e-10,1-1e-10,N)
     X = np.zeros((N,1))
     for i in range(N):

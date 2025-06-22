@@ -3,7 +3,7 @@ import matplotlib.pylab as plt
 from tools_ko.ko_estimation import KoopmanEstimation
 from tools_ko.simulations import OUSimulation
 import scipy as sp
-from scipy.integrate import trapezoid
+from scipy.integrate import cumulative_trapezoid
 
 x0 = 0
 n = 20000
@@ -55,7 +55,7 @@ for t in np.arange(1,100,12):
     est_density = K.p_est(X.T)* np.sum(K.phi * K.csol[t],axis=1)
 
     est_density=est_density[np.argsort(np.ravel(X))]
-    cum = trapezoid(x=X_sort,y= est_density.T)
+    cum = cumulative_trapezoid(x=X_sort,y= est_density.T, initial=0)
     plt.plot(X_sort,(1/cum) *est_density,lw=1,color=plt.cm.bwr(t/100),ls='--')
     
     
