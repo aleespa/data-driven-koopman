@@ -1,7 +1,8 @@
 #tools_ko/simulations
 import numpy as np
-from scipy.special import erfinv
 from scipy.integrate import trapezoid, cumulative_trapezoid
+from scipy.special import erfinv
+
 
 def OUSimulation(x0, n,dt,D):
     """

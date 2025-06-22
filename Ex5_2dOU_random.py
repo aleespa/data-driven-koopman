@@ -1,9 +1,8 @@
-import numpy as np
 import matplotlib.pylab as plt
+import numpy as np
+
 from tools_ko.ko_estimation import KoopmanEstimation
 from tools_ko.simulations import OUSimulation2d
-import scipy as sp
-from scipy.integrate import trapezoid
 
 n = int(2e6)
 dt = 5e-3

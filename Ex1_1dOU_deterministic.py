@@ -1,9 +1,10 @@
-import numpy as np
 import matplotlib.pylab as plt
-from tools_ko.ko_estimation import KoopmanEstimation
-from tools_ko.simulations import OUSimulation, OUDeterministic
+import numpy as np
 import scipy as sp
 from scipy.integrate import trapezoid
+
+from tools_ko.ko_estimation import KoopmanEstimation
+from tools_ko.simulations import OUDeterministic
 
 N = 1000
 X = OUDeterministic(N).reshape(-1, 1)

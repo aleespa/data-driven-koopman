@@ -1,9 +1,8 @@
-import numpy as np
 import matplotlib.pylab as plt
+import numpy as np
+
 from tools_ko.ko_estimation import KoopmanEstimation
 from tools_ko.simulations import QWSimulation2d
-import scipy as sp
-from scipy.integrate import trapezoid
 
 #Simulation of the trayectory
 n = int(2e7)
