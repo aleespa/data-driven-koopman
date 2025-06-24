@@ -54,7 +54,7 @@ plt.figure()
 plt.plot(np.sort(X[:, 0]), Lf[np.argsort(X[:, 0])], lw=2, color="r")
 plt.grid(alpha=0.3)
 plt.xlabel("$x$")
-plt.ylabel("$\mathcal{L}f(x)$")
+plt.ylabel("$\\mathcal{L}f(x)$")
 plt.show()
 
 # Plots for the evolution of the initial distribution
@@ -95,7 +95,7 @@ for j in range(Koopman.shape[0]):
 # ax.set_xlim(-2,2)
 ax.grid(alpha=0.3)
 ax.set_xlabel("$x$")
-ax.set_ylabel("$\mathcal{K}^{t}\exp(x)$")
+ax.set_ylabel("$\\mathcal{K}^{t}\exp(x)$")
 fig.colorbar(
     plt.cm.ScalarMappable(norm=plt.Normalize(0, 1), cmap=plt.cm.inferno),
     ax=ax,

@@ -15,7 +15,7 @@ Xt = Xt[np.linalg.norm(Xt,axis=1)<10,:]
 #Subsample from the trajectory
 N = 10000
 np.random.seed(1)
-X = Xt[np.random.choice(range(n),size=N),:]
+X = Xt[np.random.choice(range(n), size=N),:]
 
 K = KoopmanEstimation(X) #Definition of the object
 K.density_estimation(epsilon_0 = 0.15) #Density estimation
@@ -31,7 +31,7 @@ Lf = K.infinitesimal_operator(f)
 
 #Plot for the eigenvalues and eigenfunctions
 for j in range(K.m):
-    fig,axs = plt.subplots(1,2,dpi=100)
+    fig,axs = plt.subplots(1, 2, dpi=100)
     axs[0].plot(K.l)
     axs[0].set_title('Eigenvalues')
     axs[0].grid(alpha=0.3)
@@ -39,7 +39,7 @@ for j in range(K.m):
     for i in range(min(10,500)):
         axs[1].plot(np.sort(K.X[:,j]),K.U[np.argsort(K.X[:,j]),i],lw=1)
     axs[1].grid(alpha=0.3)
-    axs[1].set_ylim(-4,4)
+    axs[1].set_ylim(-4, 4)
     axs[1].set_xlabel(f'$X_{j+1}$')
     axs[1].set_ylabel(f'$\\varphi(x)$')
     axs[1].set_title(f'Eigenvectors')
