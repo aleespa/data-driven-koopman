@@ -3,24 +3,24 @@ import numpy as np
 import scipy as sp
 from scipy.integrate import trapezoid
 
-from tools_ko.ko_estimation import KoopmanEstimation
+from tools_ko.ko_estimation import KoopmanEstimator
 from tools_ko.simulations import OUDeterministic
 
 N = 1000
 X = OUDeterministic(N).reshape(-1, 1)
 
-K = KoopmanEstimation(X)
-K.density_estimation(epsilon_0=0.2)
-K.bandwidth_search()
-K.kernel_matrix()
-K.KNPGenerator(M=30)
-K.D = 1  # No estimation of the Diffusion parameter
+K = KoopmanEstimator(X)
+K.estimate_density(epsilon_0=0.2)
+K.search_bandwidth()
+K.calculate_kernel_matrix()
+K.calculate_generator(m=30)
+K.diffusion_parameter = 1  # No estimation of the Diffusion parameter
 
 f = np.vectorize(lambda x: np.exp(-x ** 2))  # Function to test the infinitesimal operator
-Lf = K.infinitesimal_operator(f)
+Lf = K.estimate_infinitesimal_operator(f)
 
 p_0 = sp.stats.norm.pdf(X, 1, 1)  # Initial Distribution to apply Perron-Frobenius operator
-K.transition_estimation(p_0)
+K.estimate_transition(p_0)
 
 f = np.vectorize(lambda x: np.cos(x * 2 * np.pi))  # Function to apply the Koopman operator
 Koopman = K.koopman_operator(f)
@@ -33,7 +33,7 @@ for j in range(K.m):
     axs[0].grid(alpha=0.3)
 
     for i in range(min(10, 500)):
-        axs[1].plot(np.sort(K.X[:, j]), K.U[np.argsort(K.X[:, j]), i], lw=1)
+        axs[1].plot(np.sort(K.x[:, j]), K.U[np.argsort(K.x[:, j]), i], lw=1)
     axs[1].grid(alpha=0.3)
     axs[1].set_ylim(-4, 4)
     axs[1].set_xlabel(f'$X_{j + 1}$')

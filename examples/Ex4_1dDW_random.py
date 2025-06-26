@@ -3,7 +3,7 @@ import numpy as np
 import scipy as sp
 from scipy.integrate import trapezoid
 
-from tools_ko.ko_estimation import KoopmanEstimation
+from tools_ko.ko_estimation import KoopmanEstimator
 from tools_ko.simulations import DWSimulation
 
 x0 = 0
@@ -17,24 +17,24 @@ Xt = DWSimulation(x0, n, dt, D)
 N = 5000
 X = Xt[np.random.choice(range(n), size=N), :]
 
-K = KoopmanEstimation(X)  # Definition of the object
-K.density_estimation(epsilon_0=0.0298994974)  # Density estimation
-K.bandwidth_search()  # Search for the optimal bandwidth
-K.kernel_matrix()  # Computes the kernel matrix
-K.KNPGenerator(
-    M=400
+K = KoopmanEstimator(X)  # Definition of the object
+K.estimate_density(epsilon_0=0.0298994974)  # Density estimation
+K.search_bandwidth()  # Search for the optimal bandwidth
+K.calculate_kernel_matrix()  # Computes the kernel matrix
+K.calculate_generator(
+    m=400
 )  # Computes the inifinitesimal generator and its eigendecomposition
-K.diffusion_estimation(Xt, dt)  # Estimates the diffusion parameter
+K.estimate_diffusion_parameter(Xt, dt)  # Estimates the diffusion parameter
 
 f = np.vectorize(
     lambda x: np.exp(-(x**2))
 )  # Function to test the infinitesimal operator
-Lf = K.infinitesimal_operator(f)
+Lf = K.estimate_infinitesimal_operator(f)
 
 p_0 = sp.stats.norm.pdf(
     X, 1, 1
 )  # Initial Distribution to apply Perron-Frobenius operator
-K.transition_estimation(p_0)
+K.estimate_transition(p_0)
 
 f = np.vectorize(
     lambda x: np.cos(x * 2 * np.pi)
@@ -49,7 +49,7 @@ for j in range(K.m):
     axs[0].grid(alpha=0.3)
 
     for i in range(min(10, 500)):
-        axs[1].plot(np.sort(K.X[:, j]), K.U[np.argsort(K.X[:, j]), i], lw=1)
+        axs[1].plot(np.sort(K.x[:, j]), K.U[np.argsort(K.x[:, j]), i], lw=1)
     axs[1].grid(alpha=0.3)
     axs[1].set_ylim(-4, 4)
     axs[1].set_xlabel(f"$X_{j+1}$")
