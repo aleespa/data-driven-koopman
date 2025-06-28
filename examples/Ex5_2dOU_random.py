@@ -1,8 +1,8 @@
 import matplotlib.pylab as plt
 import numpy as np
 
-from tools_ko.ko_estimation import KoopmanEstimator
-from tools_ko.simulations import OUSimulation2d
+from data_driven_koopman.ko_estimation import KoopmanEstimator
+from data_driven_koopman.simulations import OUSimulation2d
 
 n = int(2e6)
 dt = 5e-3

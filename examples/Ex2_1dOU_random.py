@@ -3,8 +3,8 @@ import numpy as np
 import scipy as sp
 from scipy.integrate import trapezoid
 
-from tools_ko.ko_estimation import KoopmanEstimator
-from tools_ko.simulations import OUSimulation
+from data_driven_koopman.ko_estimation import KoopmanEstimator
+from data_driven_koopman.simulations import OUSimulation
 
 x0 = 0
 n = 2000000
