@@ -4,10 +4,10 @@ import scipy as sp
 from scipy.integrate import trapezoid
 
 from data_driven_koopman.ko_estimation import KoopmanEstimator
-from data_driven_koopman.simulations import OUDeterministic
+from data_driven_koopman.simulations import generate_deterministic_ou_process
 
 N = 1000
-X = OUDeterministic(N).reshape(-1, 1)
+X = generate_deterministic_ou_process(N).reshape(-1, 1)
 
 K = KoopmanEstimator(X)
 K.estimate_density(epsilon_0=0.2)

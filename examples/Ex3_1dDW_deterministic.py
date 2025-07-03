@@ -4,10 +4,10 @@ import scipy as sp
 from scipy.integrate import trapezoid
 
 from data_driven_koopman.ko_estimation import KoopmanEstimator
-from data_driven_koopman.simulations import DWDeterministic
+from data_driven_koopman.simulations import generate_deterministic_double_well
 
 N = 4000
-X = DWDeterministic(N).reshape(-1, 1)
+X = generate_deterministic_double_well(N).reshape(-1, 1)
 
 K = KoopmanEstimator(X)  # Definition of the object
 K.estimate_density(epsilon_0=0.01)  # Density estimation

@@ -2,14 +2,14 @@ import matplotlib.pylab as plt
 import numpy as np
 
 from data_driven_koopman.ko_estimation import KoopmanEstimator
-from data_driven_koopman.simulations import QWSimulation2d
+from data_driven_koopman.simulations import simulate_2d_quadruple_well
 
 #Simulation of the trayectory
 n = int(2e7)
 dt = 1e-3
 D = 1
 np.random.seed(1)
-Xt = QWSimulation2d(D=D,n=n,dt=dt)
+Xt = simulate_2d_quadruple_well(D=D, n=n, dt=dt)
 Xt = Xt[np.linalg.norm(Xt,axis=1)<10,:]
 
 #Subsample from the trajectory

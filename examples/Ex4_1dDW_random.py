@@ -4,7 +4,7 @@ import scipy as sp
 from scipy.integrate import trapezoid
 
 from data_driven_koopman.ko_estimation import KoopmanEstimator
-from data_driven_koopman.simulations import DWSimulation
+from data_driven_koopman.simulations import simulate_double_well
 
 x0 = 0
 n = int(1e6)
@@ -12,7 +12,7 @@ dt = 0.01
 T = dt * n
 D = 1
 np.random.seed(1)
-Xt = DWSimulation(x0, n, dt, D)
+Xt = simulate_double_well(x0, n, dt, D)
 
 N = 5000
 X = Xt[np.random.choice(range(n), size=N), :]

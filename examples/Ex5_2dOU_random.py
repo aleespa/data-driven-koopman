@@ -2,13 +2,13 @@ import matplotlib.pylab as plt
 import numpy as np
 
 from data_driven_koopman.ko_estimation import KoopmanEstimator
-from data_driven_koopman.simulations import OUSimulation2d
+from data_driven_koopman.simulations import simulate_2d_ou_process
 
 n = int(2e6)
 dt = 5e-3
 D = 1
 np.random.seed(1)
-Xt = OUSimulation2d(D=D,n=n,dt=dt)
+Xt = simulate_2d_ou_process(D=D, n=n, dt=dt)
 
 N = 10000
 np.random.seed(1)

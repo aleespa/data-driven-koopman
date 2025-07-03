@@ -4,7 +4,7 @@ import scipy as sp
 from scipy.integrate import cumulative_trapezoid
 
 from data_driven_koopman.ko_estimation import KoopmanEstimator
-from data_driven_koopman.simulations import OUSimulation
+from data_driven_koopman.simulations import simulate_ou_process
 
 x0 = 0
 n = 20000
@@ -12,7 +12,7 @@ dt = 0.01
 T = dt * n
 D = 1
 np.random.seed(1)
-Xt = OUSimulation(x0, n, dt, D)
+Xt = simulate_ou_process(x0, n, dt, D)
 
 N = 2000
 X = Xt[np.random.choice(range(n), size=N), :]

@@ -1,14 +1,14 @@
 import unittest
 
 from ko_estimation import KoopmanEstimator
-from simulations import OUDeterministic
+from simulations import generate_deterministic_ou_process
 
 
 class MyTestCase(unittest.TestCase):
 
     def test_one_d_estimation(self):
         n = 1000
-        x = OUDeterministic(n).reshape(-1, 1)
+        x = generate_deterministic_ou_process(n).reshape(-1, 1)
 
         koopman_estimator = KoopmanEstimator(x)
         koopman_estimator.estimate_density(epsilon_0=0.2)
